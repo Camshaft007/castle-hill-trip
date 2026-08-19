@@ -94,6 +94,14 @@
     };
   }
 
+  function readStoredState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return { ...defaultState(), ...JSON.parse(raw) };
+    } catch (e) { /* ignore corrupt storage */ }
+    return defaultState();
+  }
+
   function loadState() {
     const fromHash = readHash();
     if (fromHash) {
@@ -101,11 +109,7 @@
       history.replaceState(null, "", location.pathname + location.search);
       return fromHash;
     }
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return { ...defaultState(), ...JSON.parse(raw) };
-    } catch (e) { /* ignore corrupt storage */ }
-    return defaultState();
+    return readStoredState();
   }
 
   function saveState(s) {
@@ -128,7 +132,10 @@
   }
 
   let state = loadState();
-  function persist() { saveState(state); }
+  function persist() {
+    saveState(state);
+    window.dispatchEvent(new Event("chdp:local-write")); // picked up by sync.js, no-op if it never loaded
+  }
 
   // ---------- Tabs ----------
 
@@ -665,6 +672,32 @@
       root.appendChild(entry);
     });
   }
+
+  // ---------- Cross-device sync ----------
+
+  function renderOverviewFields() {
+    const dateInput = document.getElementById("trip-date");
+    const accomInput = document.getElementById("accom-input");
+    // Don't stomp a field the person is actively typing into when a remote update lands.
+    if (document.activeElement !== dateInput) dateInput.value = state.tripDate || "";
+    if (document.activeElement !== accomInput) accomInput.value = state.accommodation || "";
+    renderCountdown();
+  }
+
+  function renderAll() {
+    renderOverviewFields();
+    renderStats();
+    renderChecklist();
+    renderExpenses();
+    renderConditionsLog();
+    renderForfeitWhoChips();
+    renderForfeitLog();
+  }
+
+  window.addEventListener("chdp:remote-update", () => {
+    state = readStoredState();
+    renderAll();
+  });
 
   // ---------- Init ----------
 

@@ -66,7 +66,7 @@
 
     <div class="card">
       <h2 class="card-title">Keep everyone in sync</h2>
-      <p class="muted-copy">This app saves to your own phone only &mdash; there's no shared server. When you update the checklist, costs or conditions log, tap Share to copy a link with your latest data. Send it in the group chat; whoever opens it gets your update.</p>
+      <p class="muted-copy">Changes sync automatically to everyone's phone when you've got signal. No signal? Everything still works &mdash; tap Share to copy a link with your latest data and send it in the group chat instead.</p>
       <div class="share-row">
         <button class="btn btn-accent" id="share-btn" type="button">Share trip data</button>
         <span class="share-status" id="share-status" aria-live="polite"></span>
@@ -203,5 +203,6 @@
 </nav>
 
 <script src="app.js"></script>
+<script type="module" src="sync.js"></script>
 </body>
 </html>

@@ -14,9 +14,11 @@ No build step, no backend — just static HTML/CSS/JS, built to run well on a ph
 
 ## How the data syncs (read this)
 
-This is a static site with no server, so there's no live sync between phones. Each person's browser keeps its own copy in `localStorage`. When you've made changes worth sharing (packed some gear, logged an expense, updated the conditions log), tap **Share trip data** on the Overview tab — it copies a link encoding your current data. Send that link in the group chat; whoever opens it gets your snapshot (overwriting their local copy).
+The app is still a static site with no backend of its own, but it syncs live through a small Firestore database (`sync.js`) whenever there's signal: check a box, log an expense, draw a forfeit — it appears on everyone's phone within a second or two. Firestore also caches the trip data locally and queues writes made while offline, so it keeps working through patchy backcountry signal and catches up automatically once you're back in range.
 
-It's manual, not real-time — treat it like "here's the latest," not a live shared doc.
+If `sync.js` can't load at all (zero signal on a first-ever page load, before anything's cached), the app still works exactly as a plain offline tool: everything saves to `localStorage`, and the **Share trip data** button on the Overview tab copies a link encoding your current data that you can send in the group chat as a manual fallback.
+
+**Security note:** the Firestore rules restrict access to exactly one document — nothing else in the database is reachable — and that document's ID is a random unguessable string rather than anything the URL or page reveals, so knowing it is effectively the "passcode." There's no real authentication behind it, which is the right amount of effort for four friends' packing list and bar tab, not something handling anything sensitive.
 
 ## Conditions data
 
