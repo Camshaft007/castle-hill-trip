@@ -599,6 +599,48 @@ textarea.text-input { resize: vertical; font-family: inherit; }
   color: var(--muted);
 }
 
+.slope-readout {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  margin: 14px 0 4px;
+}
+
+.slope-angle {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 3rem;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.slope-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 9px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.slope-badge.band-low { background: var(--danger-low); }
+.slope-badge.band-moderate { background: var(--danger-moderate); color: #2B1D00; }
+.slope-badge.band-prime { background: var(--danger-high); }
+.slope-badge.band-steep { background: var(--danger-extreme); color: var(--danger-extreme-ink); }
+
+.slope-btn {
+  width: 100%;
+  margin-top: 10px;
+}
+
+#slope-status {
+  text-align: center;
+  min-height: 1.2em;
+}
+
 .conditions-form { display: flex; flex-direction: column; gap: 10px; }
 
 .conditions-grid {

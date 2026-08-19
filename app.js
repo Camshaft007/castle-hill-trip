@@ -673,6 +673,84 @@
     });
   }
 
+  // ---------- Slope meter ----------
+
+  function slopeBand(angle) {
+    if (angle < 25) return { cls: "band-low", label: "Low angle" };
+    if (angle < 30) return { cls: "band-moderate", label: "Moderate" };
+    if (angle <= 45) return { cls: "band-prime", label: "Prime avalanche terrain" };
+    return { cls: "band-steep", label: "Very steep" };
+  }
+
+  function initSlopeMeter() {
+    const btn = document.getElementById("slope-btn");
+    const angleEl = document.getElementById("slope-angle");
+    const badgeEl = document.getElementById("slope-badge");
+    const tiltNote = document.getElementById("slope-tilt-note");
+    const status = document.getElementById("slope-status");
+
+    let handler = null;
+
+    function onOrientation(event) {
+      if (event.beta === null || event.beta === undefined) {
+        status.textContent = "No motion data coming through — try reloading the page.";
+        return;
+      }
+      status.textContent = "";
+      const angle = Math.min(90, Math.round(Math.abs(event.beta)));
+      angleEl.textContent = `${angle}°`;
+
+      const band = slopeBand(angle);
+      badgeEl.className = `slope-badge ${band.cls}`;
+      badgeEl.textContent = band.label;
+      badgeEl.hidden = false;
+
+      if (event.gamma !== null && Math.abs(event.gamma) > 15) {
+        tiltNote.textContent = "Tilted sideways — square the top of your phone up the fall line for an accurate reading.";
+        tiltNote.hidden = false;
+      } else {
+        tiltNote.hidden = true;
+      }
+    }
+
+    function stop() {
+      if (handler) window.removeEventListener("deviceorientation", handler);
+      handler = null;
+      btn.textContent = "Start measuring";
+    }
+
+    function start() {
+      handler = onOrientation;
+      window.addEventListener("deviceorientation", handler);
+      btn.textContent = "Stop";
+      status.textContent = "";
+    }
+
+    btn.addEventListener("click", async () => {
+      if (handler) { stop(); return; }
+
+      if (typeof window.DeviceOrientationEvent === "undefined") {
+        status.textContent = "This device/browser doesn't expose motion sensors.";
+        return;
+      }
+
+      if (typeof DeviceOrientationEvent.requestPermission === "function") {
+        try {
+          const result = await DeviceOrientationEvent.requestPermission();
+          if (result !== "granted") {
+            status.textContent = "Motion access denied — enable it in Settings > Safari > Motion & Orientation Access, then reload.";
+            return;
+          }
+        } catch (e) {
+          status.textContent = "Couldn't request motion access — try reloading the page.";
+          return;
+        }
+      }
+
+      start();
+    });
+  }
+
   // ---------- Cross-device sync ----------
 
   function renderOverviewFields() {
@@ -707,6 +785,7 @@
     renderChecklist();
     initCosts();
     initConditions();
+    initSlopeMeter();
     initForfeits();
     renderStats();
   });

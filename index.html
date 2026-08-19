@@ -146,6 +146,20 @@
     </div>
 
     <div class="card">
+      <h2 class="card-title">Slope meter</h2>
+      <p class="muted-copy">Lay your phone flat against the slope, top edge pointing up the fall line, and hold still. Rough estimate only &mdash; phone sensors drift a few degrees, so cross-check against your guide's read, not instead of it.</p>
+
+      <div class="slope-readout">
+        <span class="slope-angle" id="slope-angle">&mdash;&deg;</span>
+        <span class="slope-badge" id="slope-badge" hidden></span>
+      </div>
+      <p class="muted-copy small" id="slope-tilt-note" hidden></p>
+
+      <button class="btn btn-accent slope-btn" id="slope-btn" type="button">Start measuring</button>
+      <p class="muted-copy small" id="slope-status"></p>
+    </div>
+
+    <div class="card">
       <h2 class="card-title">Log today's conditions</h2>
       <form id="conditions-form" class="conditions-form">
         <div class="chip-row" id="danger-chips" role="radiogroup" aria-label="Avalanche danger rating"></div>
