@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Castle Hill Dawn Patrol</title>
+<meta name="description" content="Trip dashboard for Scribe, Kaos, No-Plan and Camshaft &mdash; checklist, cost splitter and conditions links for splitboarding at Castle Hill, NZ." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='84'%3E%F0%9F%8F%82%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <p class="eyebrow">Craigieburn Range &middot; Canterbury, NZ</p>
+      <h1 id="brand-title">Castle Hill<span class="brand-sub">Dawn Patrol</span></h1>
+    </div>
+    <div class="crew" aria-label="Trip crew">
+      <span class="crew-name">Scribe <em>Jimmy</em></span>
+      <span class="crew-name">Kaos <em>Caleb</em></span>
+      <span class="crew-name">No-Plan <em>Hippy</em></span>
+      <span class="crew-name">Camshaft <em>Cam</em></span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- OVERVIEW -->
+  <section class="panel" id="panel-overview" data-panel>
+    <div class="card countdown-card">
+      <div class="countdown-head">
+        <label for="trip-date">Departure</label>
+        <input type="datetime-local" id="trip-date" />
+      </div>
+      <div class="countdown-readout" id="countdown-readout" aria-live="polite">
+        <div class="countdown-seg"><span class="countdown-num" id="cd-days">--</span><span class="countdown-label">days</span></div>
+        <div class="countdown-seg"><span class="countdown-num" id="cd-hours">--</span><span class="countdown-label">hrs</span></div>
+        <div class="countdown-seg"><span class="countdown-num" id="cd-mins">--</span><span class="countdown-label">min</span></div>
+      </div>
+      <p class="countdown-note" id="countdown-note">Set your departure time to start the countdown.</p>
+    </div>
+
+    <div class="stat-row">
+      <div class="card stat-card">
+        <p class="stat-value" id="stat-packed">0%</p>
+        <p class="stat-label">Gear packed</p>
+      </div>
+      <div class="card stat-card">
+        <p class="stat-value" id="stat-spend">$0</p>
+        <p class="stat-label">Trip spend</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title-row">
+        <h2 class="card-title">Where we're staying</h2>
+        <a class="maps-link" href="https://www.google.com/maps/search/5+Slalom+Place,+Castle+Hill" target="_blank" rel="noopener">Open in Maps</a>
+      </div>
+      <input type="text" id="accom-input" class="text-input" placeholder="e.g. Castle Hill village, Flock Hill hut&hellip;" />
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">Keep everyone in sync</h2>
+      <p class="muted-copy">This app saves to your own phone only &mdash; there's no shared server. When you update the checklist, costs or conditions log, tap Share to copy a link with your latest data. Send it in the group chat; whoever opens it gets your update.</p>
+      <div class="share-row">
+        <button class="btn btn-accent" id="share-btn" type="button">Share trip data</button>
+        <span class="share-status" id="share-status" aria-live="polite"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section class="panel" id="panel-checklist" data-panel hidden>
+    <div class="panel-head">
+      <h2>Checklist</h2>
+      <p class="muted-copy">Straight from Anna's AKG/Chill intro-to-touring gear list. Tap a name to assign who's bringing it, tick it off once it's in the pack.</p>
+      <p class="muted-copy small">Beacon, shovel, probe and ski crampons are rentable from Chill. Splitboard rental: <a href="https://splitn2.com" target="_blank" rel="noopener">splitn2.com</a> (Christchurch).</p>
+    </div>
+    <div id="checklist-categories"></div>
+  </section>
+
+  <!-- COSTS -->
+  <section class="panel" id="panel-costs" data-panel hidden>
+    <div class="panel-head">
+      <h2>Costs</h2>
+      <p class="muted-copy">Gas, hut fees, food &mdash; log it here and it splits four ways automatically.</p>
+    </div>
+
+    <div class="card">
+      <form id="expense-form" class="expense-form">
+        <input type="text" id="exp-desc" class="text-input" placeholder="What was it for?" required />
+        <div class="expense-form-row">
+          <div class="amount-field">
+            <span class="amount-prefix">$</span>
+            <input type="number" id="exp-amount" class="text-input amount-input" placeholder="0.00" min="0" step="0.01" required />
+          </div>
+          <button type="submit" class="btn btn-accent">Add</button>
+        </div>
+        <div class="chip-row" id="exp-payer-chips" role="radiogroup" aria-label="Paid by"></div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">Ledger</h2>
+      <div class="table-scroll">
+        <table class="ledger-table">
+          <thead>
+            <tr><th>What</th><th>Amount</th><th>Paid by</th><th></th></tr>
+          </thead>
+          <tbody id="expense-rows">
+            <tr class="empty-row"><td colspan="4">No expenses logged yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">Settle up</h2>
+      <div id="settlement-list" class="settlement-list">
+        <p class="muted-copy">Add an expense to see the split.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONDITIONS -->
+  <section class="panel" id="panel-conditions" data-panel hidden>
+    <div class="panel-head">
+      <h2>Conditions</h2>
+      <p class="muted-copy">This app can't pull live data &mdash; check the real sources below, then log what you find so the group has one shared read for the day.</p>
+    </div>
+
+    <div class="card link-card">
+      <h2 class="card-title">Check before you go</h2>
+      <ul class="link-list">
+        <li><a href="https://www.avalanche.net.nz" target="_blank" rel="noopener">NZ Avalanche Advisory <span class="link-note">Craigieburn / Canterbury danger rating</span></a></li>
+        <li><a href="https://www.metservice.com/mountain" target="_blank" rel="noopener">MetService Mountain Forecast <span class="link-note">wind, freezing level, precipitation</span></a></li>
+        <li><a href="https://www.mountainsafety.org.nz" target="_blank" rel="noopener">Mountain Safety Council <span class="link-note">avalanche &amp; backcountry advice</span></a></li>
+        <li><a href="https://journeys.nzta.govt.nz" target="_blank" rel="noopener">NZTA Journey Planner <span class="link-note">SH73 Arthur's Pass road conditions</span></a></li>
+      </ul>
+      <p class="muted-copy small">In an emergency call <strong>111</strong>. A PLB or inReach activation alerts the Rescue Coordination Centre NZ directly &mdash; carry one and make sure everyone knows whose pack it's in.</p>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">Log today's conditions</h2>
+      <form id="conditions-form" class="conditions-form">
+        <div class="chip-row" id="danger-chips" role="radiogroup" aria-label="Avalanche danger rating"></div>
+        <div class="conditions-grid">
+          <input type="text" id="cond-freezing" class="text-input" placeholder="Freezing level (e.g. 1400m)" />
+          <input type="text" id="cond-wind" class="text-input" placeholder="Wind (e.g. NW 30-40km/h)" />
+        </div>
+        <textarea id="cond-notes" class="text-input" rows="2" placeholder="Notes &mdash; snow quality, hazards, plan&hellip;"></textarea>
+        <div class="chip-row" id="cond-who-chips" role="radiogroup" aria-label="Logged by"></div>
+        <button type="submit" class="btn btn-accent">Log it</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">Log</h2>
+      <div id="conditions-log" class="conditions-log">
+        <p class="muted-copy">Nothing logged yet.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORFEITS -->
+  <section class="panel" id="panel-forfeits" data-panel hidden>
+    <div class="panel-head">
+      <h2>Forfeits</h2>
+      <p class="muted-copy">Après only &mdash; boards racked, boots off. Draw one and own it.</p>
+    </div>
+
+    <div class="card">
+      <p class="card-title">Who's up?</p>
+      <div class="chip-row" id="forfeit-who-chips" role="radiogroup" aria-label="Who's up"></div>
+      <button class="btn btn-accent forfeit-draw-btn" id="forfeit-draw-btn" type="button">Draw forfeit</button>
+      <div id="forfeit-reveal" class="forfeit-reveal" hidden>
+        <span class="forfeit-tier-badge" id="forfeit-tier-badge"></span>
+        <p class="forfeit-text" id="forfeit-text"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">History</h2>
+      <div id="forfeit-log" class="forfeit-log">
+        <p class="muted-copy">No forfeits drawn yet.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<nav class="tabbar" aria-label="Sections">
+  <button class="tab-btn is-active" data-tab="overview" type="button">Overview</button>
+  <button class="tab-btn" data-tab="checklist" type="button">Checklist</button>
+  <button class="tab-btn" data-tab="costs" type="button">Costs</button>
+  <button class="tab-btn" data-tab="conditions" type="button">Conditions</button>
+  <button class="tab-btn" data-tab="forfeits" type="button">Forfeits</button>
+</nav>
+
+<script src="app.js"></script>
+</body>
+</html>
